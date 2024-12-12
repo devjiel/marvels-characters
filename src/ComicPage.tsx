@@ -1,41 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchMarvelComicById } from './api/marvel';
+import { Comic, fetchMarvelComicById } from './api/marvel';
 
-interface Comic {
-  id: number;
-  title: string;
-  description: string;
-  thumbnail: {
-    path: string;
-    extension: string;
-  };
+
+interface ComicPageProps {
+  comic: Comic | null;
+  setCurrentComic: (comic: Comic) => void;
 }
 
-const ComicPage: React.FC = () => {
+const ComicPage: React.FC<ComicPageProps> = ({ comic, setCurrentComic }) => {
   const { id } = useParams<{ id: string }>();
-  const [comic, setComic] = useState<Comic | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const getComic = async () => {
-      if (id) {
-        setLoading(true);
-        const comicData = await fetchMarvelComicById(parseInt(id));
-        setComic(comicData);
-        setLoading(false);
+      if (!comic && id) {
+        const fetchedComic = await fetchMarvelComicById(parseInt(id));
+        setCurrentComic(fetchedComic);
       }
     };
 
     getComic();
-  }, [id]);
-
-  if (loading) {
-    return <div className="text-white">Loading...</div>;
-  }
+  }, [comic, id, setCurrentComic]);
 
   if (!comic) {
-    return <div className="text-white">Comic not found</div>;
+    return <div className="text-white">Loading...</div>;
   }
 
   return (
@@ -44,7 +32,7 @@ const ComicPage: React.FC = () => {
       <img
         src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
         alt={comic.title}
-        className="w-full h-96 object-cover"
+        className="w-full h-128 w-96 object-cover"
       />
       <p className="mt-4">{comic.description}</p>
     </div>

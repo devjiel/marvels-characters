@@ -1,36 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchMarvelComics } from './api/marvel';
+import { Comic } from './api/marvel';
 
-interface Comic {
-  id: number;
-  title: string;
-  thumbnail: {
-    path: string;
-    extension: string;
-  };
+interface ComicListProps {
+  comics: Comic[];
+  loading: boolean;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  handleComicClick: (id: number) => void;
 }
 
-const ComicList: React.FC = () => {
-  const [comics, setComics] = useState<Comic[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1);
+const ComicList: React.FC<ComicListProps> = ({ comics, loading, setPage, handleComicClick }) => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const getComics = async (page: number) => {
-      setLoading(true);
-      const newComics = await fetchMarvelComics(page);
-      setComics((prevComics) => [...prevComics, ...newComics]);
-      setLoading(false);
-    };
-
-    getComics(page);
-  }, [page]);
-
-  const handleComicClick = (id: number) => {
-    navigate(`/comic/${id}`);
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,12 +25,12 @@ const ComicList: React.FC = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [loading]);
+  }, [loading, setPage]);
 
   return (
     <div className="grid grid-cols-5 gap-16">
       {comics.map((comic) => (
-        <div key={comic.id} onClick={() => handleComicClick(comic.id)} className="cursor-pointer">
+        <div key={comic.id} onClick={() => { handleComicClick(comic.id); navigate(`/comic/${comic.id}`); }} className="cursor-pointer">
           <div className="shadow-md">
             <img
               src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}

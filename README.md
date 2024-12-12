@@ -16,4 +16,4 @@ Edit .env file with your Marvel API data (https://developer.marvel.com/)
 # TODO
 
 [ ] Prevent double request on comic list page at first loading or when scroll
-[ ] Keep a state of the comic list in app and the current comic to avoid request backend each time
+[x] Keep a state of the comic list in app and the current comic to avoid request backend each time
