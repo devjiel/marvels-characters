@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchMarvelComics } from './api/marvel';
 
 interface Comic {
@@ -12,8 +13,9 @@ interface Comic {
 
 const ComicList: React.FC = () => {
   const [comics, setComics] = useState<Comic[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getComics = async (page: number) => {
@@ -25,6 +27,10 @@ const ComicList: React.FC = () => {
 
     getComics(page);
   }, [page]);
+
+  const handleComicClick = (id: number) => {
+    navigate(`/comic/${id}`);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,7 +50,7 @@ const ComicList: React.FC = () => {
   return (
     <div className="grid grid-cols-5 gap-16">
       {comics.map((comic) => (
-        <div key={comic.id}>
+        <div key={comic.id} onClick={() => handleComicClick(comic.id)} className="cursor-pointer">
           <div className="shadow-md">
             <img
               src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}

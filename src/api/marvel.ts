@@ -30,3 +30,22 @@ export const fetchMarvelComics = async (page: number) => {
     return [];
   }
 };
+
+export const fetchMarvelComicById = async (id: number) => {
+  try {
+    const timeStamp = new Date().getTime();
+    const hash = generateHash(timeStamp);
+
+    const response = await axios.get(`${API_URL}/${id}`, {
+      params: {
+        apikey: API_KEY,
+        ts: timeStamp,
+        hash: hash,
+      },
+    });
+    return response.data.data.results[0];
+  } catch (error) {
+    console.error('Error fetching Marvel comic:', error);
+    return null;
+  }
+};
