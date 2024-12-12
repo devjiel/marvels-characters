@@ -29,15 +29,17 @@ const ComicList: React.FC = () => {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-5 gap-16">
       {comics.map((comic) => (
-        <div key={comic.id} className="p-4 border rounded-lg">
-          <img
-            src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
-            alt={comic.title}
-            className="w-full h-48 object-cover"
-          />
-          <h2 className="mt-2 text-xl font-bold">{comic.title}</h2>
+        <div key={comic.id}>
+          <div className="shadow-md">
+            <img
+              src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
+              alt={comic.title}
+              className="w-full h-96 object-cover"
+            />
+          </div>
+          <h2 className="mt-2 text-sm text-white font-bold">{comic.title}</h2>
         </div>
       ))}
     </div>
